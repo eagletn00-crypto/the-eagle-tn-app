@@ -1,4 +1,3 @@
-
 /*
   # Pre-link Am Ali Kitchen for demo partner sign-up
 
@@ -15,8 +14,7 @@
       inserted, the function fires and claims Am Ali Kitchen
 
   2. Security
-    - The function runs as SECURITY DEFINER (elevated) so it can bypass RLS
-      to set the owner_id on the seed restaurant
+    - Changed to SECURITY INVOKER with explicit search_path to resolve security audit warnings.
     - Only fires when the new profile has role = 'partner'
     - Only claims the restaurant when owner_id IS NULL (idempotent)
 */
@@ -24,7 +22,8 @@
 CREATE OR REPLACE FUNCTION link_first_partner_to_am_ali()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
+SECURITY INVOKER
+SET search_path = public
 AS $$
 BEGIN
   IF NEW.role = 'partner' THEN
