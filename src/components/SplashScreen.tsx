@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 interface Props {
@@ -100,7 +100,7 @@ export default function SplashScreen({ onComplete }: Props) {
             style={{ position: 'absolute', top: 48, display: 'flex', alignItems: 'center', gap: 12 }}
           >
             <div style={{ width: 40, height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,160,23,0.6))' }} />
-            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold-600)' }}>Plateforme Vérifiée · Tunisie</span>
+            <span className="text-amber-600" style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase' }}>Plateforme Vérifiée · Tunisie</span>
             <div style={{ width: 40, height: 1, background: 'linear-gradient(90deg, rgba(212,160,23,0.6), transparent)' }} />
           </motion.div>
 
@@ -187,8 +187,8 @@ export default function SplashScreen({ onComplete }: Props) {
                 style={{
                   width: 140, height: 140,
                   borderRadius: '28px',
-                  background: 'linear-gradient(135deg, var(--gold-500) 0%, var(--gold-300) 50%, var(--gold-500) 100%)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%)',
+                  display: 'flex', alignItems: 'center', justify+Content: 'center',
                   boxShadow: hovered
                     ? '0 0 80px rgba(232,185,35,0.7), 0 0 160px rgba(212,160,23,0.35), inset 0 1px 0 rgba(255,255,255,0.3)'
                     : '0 0 40px rgba(212,160,23,0.35), 0 0 80px rgba(212,160,23,0.15), inset 0 1px 0 rgba(255,255,255,0.2)',
@@ -220,30 +220,27 @@ export default function SplashScreen({ onComplete }: Props) {
           >
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
-              <div style={{ width: 60, height: 1, background: 'linear-gradient(90deg, transparent, var(--gold-700))' }} />
-              <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--gold-500)' }} />
-              <div style={{ width: 60, height: 1, background: 'linear-gradient(90deg, var(--gold-700), transparent)' }} />
+              <div style={{ width: 60, height: 1, background: 'linear-gradient(90deg, transparent, #b45309)' }} />
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#f59e0b' }} />
+              <div style={{ width: 60, height: 1, background: 'linear-gradient(90deg, #b45309, transparent)' }} />
             </div>
 
-            <h1 style={{
-              fontFamily: 'var(--font-display)',
+            <h1 className="text-zinc-100" style={{
               fontSize: 'clamp(2rem, 5vw, 3.5rem)',
               fontWeight: 800,
               letterSpacing: '-0.01em',
               lineHeight: 1.1,
-              color: 'var(--text-1)',
               marginBottom: 6,
             }}>
               BIENVENUE SUR
             </h1>
             <h1 style={{
-              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(2.4rem, 6vw, 4.2rem)',
               fontWeight: 800,
               letterSpacing: '-0.02em',
               lineHeight: 1,
               marginBottom: 20,
-              background: 'linear-gradient(135deg, var(--gold-300) 0%, var(--gold-500) 50%, var(--gold-400) 100%)',
+              background: 'linear-gradient(135deg, #fde68a 0%, #f59e0b 50%, #fbbf24 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -251,7 +248,7 @@ export default function SplashScreen({ onComplete }: Props) {
               L'AIGLE TN
             </h1>
 
-            <p style={{ fontSize: 13, color: 'var(--text-3)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 40 }}>
+            <p className="text-zinc-400" style={{ fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 40 }}>
               Livraison Premium · Cuisine Tunisienne Authentique
             </p>
 
@@ -262,8 +259,8 @@ export default function SplashScreen({ onComplete }: Props) {
               whileTap={{ scale: 0.97 }}
               style={{
                 padding: '16px 48px',
-                borderRadius: 'var(--r-pill)',
-                background: 'linear-gradient(135deg, var(--gold-500) 0%, var(--gold-400) 100%)',
+                borderRadius: '9999px',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
                 color: '#000',
                 fontSize: 13,
                 fontWeight: 800,
@@ -282,8 +279,8 @@ export default function SplashScreen({ onComplete }: Props) {
             <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
               {['Plateforme Vérifiée', '4K Expérience', 'Qualité Premium'].map(label => (
                 <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--gold-500)' }} />
-                  <span style={{ fontSize: 10, color: 'var(--text-3)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{label}</span>
+                  <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#f59e0b' }} />
+                  <span className="text-zinc-400" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{label}</span>
                 </div>
               ))}
             </div>
@@ -294,9 +291,10 @@ export default function SplashScreen({ onComplete }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: phase !== 'settled' ? 0.5 : 0 }}
             onClick={handleSkip}
+            className="text-zinc-400"
             style={{
               position: 'absolute', bottom: 32, right: 32,
-              fontSize: 11, color: 'var(--text-3)', letterSpacing: '0.1em',
+              fontSize: 11, letterSpacing: '0.1em',
               textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer',
             }}
           >
@@ -341,38 +339,24 @@ function EagleSVG({ flapping }: { flapping: boolean }) {
       animate={flapping ? { scaleX: [1, 1.18, 1], scaleY: [1, 0.82, 1] } : { scaleX: 1, scaleY: 1 }}
       transition={{ duration: 0.45, repeat: flapping ? Infinity : 0, ease: 'easeInOut' }}
     >
-      {/* Body */}
       <ellipse cx="40" cy="44" rx="10" ry="14" fill="#0a0804" />
-
-      {/* Left wing */}
       <motion.path
         d="M40 42 C28 34, 10 30, 4 24 C12 32, 22 38, 30 44 Z"
         fill="#0a0804"
         animate={flapping ? { d: ['M40 42 C28 34, 10 30, 4 24 C12 32, 22 38, 30 44 Z', 'M40 42 C28 40, 10 42, 4 40 C12 40, 22 42, 30 44 Z', 'M40 42 C28 34, 10 30, 4 24 C12 32, 22 38, 30 44 Z'] } : {}}
         transition={{ duration: 0.45, repeat: Infinity, ease: 'easeInOut' }}
       />
-      {/* Right wing */}
       <motion.path
         d="M40 42 C52 34, 70 30, 76 24 C68 32, 58 38, 50 44 Z"
         fill="#0a0804"
         animate={flapping ? { d: ['M40 42 C52 34, 70 30, 76 24 C68 32, 58 38, 50 44 Z', 'M40 42 C52 40, 70 42, 76 40 C68 40, 58 42, 50 44 Z', 'M40 42 C52 34, 70 30, 76 24 C68 32, 58 38, 50 44 Z'] } : {}}
         transition={{ duration: 0.45, repeat: Infinity, ease: 'easeInOut' }}
       />
-
-      {/* Tail */}
       <path d="M36 56 L40 66 L44 56 Z" fill="#0a0804" />
-
-      {/* Head */}
       <circle cx="40" cy="28" r="8" fill="#0a0804" />
-
-      {/* Beak */}
       <path d="M40 30 L47 33 L40 35 Z" fill="#0a0804" opacity="0.8" />
-
-      {/* Eye */}
       <circle cx="43" cy="26" r="1.8" fill="#0a0804" />
       <circle cx="43.5" cy="25.5" r="0.7" fill="rgba(232,185,35,0.9)" />
-
-      {/* Talons */}
       <line x1="36" y1="58" x2="30" y2="64" stroke="#0a0804" strokeWidth="2" strokeLinecap="round" />
       <line x1="38" y1="59" x2="34" y2="66" stroke="#0a0804" strokeWidth="2" strokeLinecap="round" />
       <line x1="44" y1="58" x2="50" y2="64" stroke="#0a0804" strokeWidth="2" strokeLinecap="round" />
