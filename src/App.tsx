@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import FloatingCartBar from './components/FloatingCartBar';
 import { useCart } from './hooks/useCart';
 import { ShoppingBag, Plus, Minus, Star } from 'lucide-react';
@@ -83,6 +84,53 @@ const getImageGradient = (id: string) => {
   return gradients[parseInt(id) % gradients.length];
 };
 
+// Animation variants for cards
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 50,
+  },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.6,
+      ease: [0.34, 1.56, 0.64, 1],
+    },
+  }),
+};
+
+// Animation variants for header
+const headerVariants = {
+  hidden: {
+    opacity: 0,
+    y: -20,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Animation variants for title section
+const titleVariants = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
+};
+
 function App() {
   const { items, itemCount, totalPrice, addItem, removeItem, clearCart, getItem } =
     useCart();
@@ -107,14 +155,23 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+      {/* Header with Animation */}
+      <motion.header 
+        initial="hidden"
+        animate="visible"
+        variants={headerVariants}
+        className="sticky top-0 z-40 bg-white border-b border-gray-100"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl p-2">
+              <motion.div 
+                className="bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl p-2"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <ShoppingBag className="w-6 h-6 text-white" />
-              </div>
+              </motion.div>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-black" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
                   The Eagle TN
@@ -125,18 +182,37 @@ function App() {
               </div>
             </div>
             {itemCount > 0 && (
-              <div className="text-right">
+              <motion.div 
+                className="text-right"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200 }}
+              >
                 <p className="text-sm text-gray-600">Cart Items</p>
-                <p className="text-2xl font-bold text-amber-600">{itemCount}</p>
-              </div>
+                <motion.p 
+                  className="text-2xl font-bold text-amber-600"
+                  key={itemCount}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
+                >
+                  {itemCount}
+                </motion.p>
+              </motion.div>
             )}
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="mb-10">
+        {/* Title Section with Animation */}
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={titleVariants}
+          className="mb-10"
+        >
           <h2 
             className="text-4xl md:text-5xl font-bold text-black mb-3" 
             style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
@@ -146,46 +222,66 @@ function App() {
           <p className="text-gray-600 max-w-2xl">
             Discover our curated selection of authentic Tunisian dishes, expertly prepared and delivered with elegance to your door.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Products Grid - Modern Card Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32 md:pb-24">
-          {SAMPLE_PRODUCTS.map((product) => {
+        {/* Products Grid - Modern Card Layout with Animations */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32 md:pb-24"
+          initial="hidden"
+          animate="visible"
+        >
+          {SAMPLE_PRODUCTS.map((product, index) => {
             const cartItem = getItem(product.id);
             const quantity = cartItem?.quantity || 0;
 
             return (
-              <div
+              <motion.div
                 key={product.id}
-                className="group bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-50"
+                custom={index}
+                variants={cardVariants}
+                whileHover={{
+                  y: -8,
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="group bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-50"
               >
                 {/* Product Image Placeholder - High Quality Gradient */}
-                <div 
+                <motion.div 
                   className="h-56 w-full relative overflow-hidden bg-gradient-to-br"
                   style={{ 
                     background: getImageGradient(product.id),
                   }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
                 >
                   {/* Overlay pattern for visual interest */}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300" />
                   
-                  {/* Category badge */}
-                  <div className="absolute top-4 right-4">
+                  {/* Category badge with animation */}
+                  <motion.div 
+                    className="absolute top-4 right-4"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                  >
                     <span className="bg-white bg-opacity-95 text-gray-800 text-xs font-semibold px-4 py-2 rounded-full backdrop-blur-sm">
                       {product.category}
                     </span>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
 
                 {/* Product Info */}
                 <div className="p-6 md:p-7">
                   {/* Name - Serif Font */}
-                  <h3 
+                  <motion.h3 
                     className="text-2xl font-bold text-black mb-2 group-hover:text-amber-600 transition-colors"
                     style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
                   >
                     {product.name}
-                  </h3>
+                  </motion.h3>
 
                   {/* Description - Serif Font for Elegance */}
                   <p 
@@ -195,18 +291,29 @@ function App() {
                     {product.description}
                   </p>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-5">
+                  {/* Rating with Stagger Animation */}
+                  <motion.div 
+                    className="flex items-center gap-2 mb-5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                  >
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star
+                        <motion.div
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating || 0)
-                              ? 'fill-amber-400 text-amber-400'
-                              : 'text-gray-300'
-                          }`}
-                        />
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.3 + index * 0.05 + i * 0.05 }}
+                        >
+                          <Star
+                            className={`w-4 h-4 ${
+                              i < Math.floor(product.rating || 0)
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        </motion.div>
                       ))}
                     </div>
                     <span className="text-sm font-semibold text-gray-800">
@@ -215,51 +322,74 @@ function App() {
                     <span className="text-sm text-gray-500">
                       ({product.reviews} reviews)
                     </span>
-                  </div>
+                  </motion.div>
 
                   {/* Footer - Price and Controls */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <p className="text-2xl md:text-3xl font-bold text-amber-600" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                    <motion.p 
+                      className="text-2xl md:text-3xl font-bold text-amber-600" 
+                      style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       {product.price.toLocaleString('en-US', {
                         minimumFractionDigits: 1,
                         maximumFractionDigits: 1,
                       })}{' '}
                       <span className="text-sm text-gray-500">DT</span>
-                    </p>
+                    </motion.p>
 
                     {/* Quantity Controls */}
                     {quantity > 0 ? (
-                      <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
-                        <button
+                      <motion.div 
+                        className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 200 }}
+                      >
+                        <motion.button
                           onClick={() => removeItem(product.id)}
                           className="text-amber-600 hover:text-amber-700 transition-colors p-1"
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.8 }}
                         >
                           <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="text-gray-800 font-bold w-6 text-center">
+                        </motion.button>
+                        <motion.span 
+                          className="text-gray-800 font-bold w-6 text-center"
+                          key={quantity}
+                          initial={{ scale: 1.3 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 200 }}
+                        >
                           {quantity}
-                        </span>
-                        <button
+                        </motion.span>
+                        <motion.button
                           onClick={() => handleAddItem(product)}
                           className="text-amber-600 hover:text-amber-700 transition-colors p-1"
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.8 }}
                         >
                           <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
+                        </motion.button>
+                      </motion.div>
                     ) : (
-                      <button
+                      <motion.button
                         onClick={() => handleAddItem(product)}
-                        className="px-6 py-2 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+                        className="px-6 py-2 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.92 }}
+                        transition={{ type: 'spring', stiffness: 300 }}
                       >
                         Add
-                      </button>
+                      </motion.button>
                     )}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </main>
 
       {/* Floating Cart Bar with Telegram Integration */}
