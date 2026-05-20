@@ -1,51 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { supabase } from './lib/supabase';
-import { useAuthStore } from './store/authStore';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
-import SplashScreen from './components/SplashScreen';
-import RestaurantsPage from './pages/RestaurantsPage';
-import RestaurantPage from './pages/RestaurantPage';
-import AuthPage from './pages/AuthPage';
-import CartPage from './pages/CartPage';
-import OrdersPage from './pages/OrdersPage';
-import DashboardPage from './pages/DashboardPage';
-import MentionsLegales from './pages/legal/MentionsLegales';
-import CGU from './pages/legal/CGU';
-import Confidentialite from './pages/legal/Confidentialite';
-
 export default function App() {
-  const { setUser, setProfile, setLoading } = useAuthStore();
-  const [showSplash, setShowSplash] = useState(false);
-
   return (
-    <>
-      <Toaster position="top-right" />
-      {showSplash ? (
-        <SplashScreen onComplete={() => setShowSplash(false)} />
-      ) : (
-        <>
-          <Navbar />
-          <main style={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/restaurants" element={<RestaurantsPage />} />
-              <Route path="/restaurants/:id" element={<RestaurantPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/orders" element={<OrdersPage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/legal/mentions-legales" element={<MentionsLegales />} />
-              <Route path="/legal/cgu" element={<CGU />} />
-              <Route path="/legal/confidentialite" element={<Confidentialite />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          <Footer />
-        </>
-      )}
-    </>
+    <div style={{ padding: '50px', background: '#fff', color: '#000', height: '100vh' }}>
+      <h1>مرحباً! الموقع يعمل الآن.</h1>
+      <ul>
+        <li>تم بناء التطبيق بنجاح.</li>
+        <li>لا توجد أخطاء برمجية في هذا الملف.</li>
+      </ul>
+      <p>إذا رأيت هذا النص، فمشكلتك السابقة كانت في أحد ملفات المكونات (Navbar أو Footer أو Pages) التي كانت تسبب تعارضاً في التنسيق.</p>
+    </div>
   );
 }
