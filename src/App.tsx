@@ -57,7 +57,7 @@ const SAMPLE_PRODUCTS: Product[] = [
 ];
 
 function App() {
-  const { itemCount, totalPrice, addItem, removeItem, clearCart, getItem } =
+  const { items, itemCount, totalPrice, addItem, removeItem, clearCart, getItem } =
     useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
@@ -73,10 +73,6 @@ function App() {
     setIsCheckingOut(true);
     // Simulate checkout process
     setTimeout(() => {
-      alert(`Order Placed! Total: ${totalPrice.toLocaleString('en-US', {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3,
-      })} DT`);
       clearCart();
       setIsCheckingOut(false);
     }, 2000);
@@ -131,7 +127,7 @@ function App() {
             return (
               <div
                 key={product.id}
-                className="group bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-[#d4af37] border-opacity-30 rounded-xl overflow-hidden hover:border-opacity-60 transition-all duration-300 hover:shadow-lg hover:shadow-[#d4af37]/10"
+                className="group bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-[#d4af37] border-opacity-30 rounded-xl overflow-hidden hover:border-opacity-60 transition-all duration-300"
               >
                 {/* Product Image Placeholder */}
                 <div className="h-40 bg-gradient-to-br from-[#d4af37] via-[#9d7d28] to-[#5a5a5a] opacity-30 group-hover:opacity-40 transition-opacity" />
@@ -193,10 +189,11 @@ function App() {
         </div>
       </main>
 
-      {/* Floating Cart Bar */}
+      {/* Floating Cart Bar with Telegram Integration */}
       <FloatingCartBar
         itemCount={itemCount}
         totalPrice={totalPrice}
+        cartItems={items}
         onCheckout={handleCheckout}
         isLoading={isCheckingOut}
         currencySymbol="DT"
