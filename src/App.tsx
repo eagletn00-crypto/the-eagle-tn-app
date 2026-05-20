@@ -20,6 +20,14 @@ export default function App() {
   const { setUser, setProfile, setLoading } = useAuthStore()
   const [showSplash, setShowSplash] = useState(true)
 
+  // صمام الأمان: إخفاء الشاشة بعد 3 ثوانٍ إجبارياً
+  useEffect(() => {
+    if (showSplash) {
+      const timer = setTimeout(() => setShowSplash(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [showSplash])
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
