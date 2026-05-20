@@ -3,10 +3,24 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // إضافة هذا السطر هو مفتاح الحل للمسارات في Vercel
-  base: './', 
+  base: '/',
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'supabase': ['@supabase/supabase-js'],
+        }
+      }
+    }
+  },
   server: {
     host: true,
-    port: 5173
+    port: 5173,
+    strictPort: false
   }
 })
