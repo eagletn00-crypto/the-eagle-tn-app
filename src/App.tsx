@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import FloatingCartBar from './components/FloatingCartBar';
 import { useCart } from './hooks/useCart';
-import { ShoppingBag, Plus, Minus } from 'lucide-react';
+import { ShoppingBag, Plus, Minus, Star } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -9,6 +9,8 @@ interface Product {
   price: number;
   description: string;
   category: string;
+  rating?: number;
+  reviews?: number;
 }
 
 const SAMPLE_PRODUCTS: Product[] = [
@@ -18,6 +20,8 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 12.5,
     description: 'Delicious grilled chicken with spices',
     category: 'Sandwiches',
+    rating: 4.8,
+    reviews: 128,
   },
   {
     id: '2',
@@ -25,6 +29,8 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 10.0,
     description: 'Spicy sausage with fresh vegetables',
     category: 'Sandwiches',
+    rating: 4.6,
+    reviews: 95,
   },
   {
     id: '3',
@@ -32,6 +38,8 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 8.5,
     description: 'Crispy falafel with tahini sauce',
     category: 'Vegetarian',
+    rating: 4.7,
+    reviews: 87,
   },
   {
     id: '4',
@@ -39,6 +47,8 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 15.0,
     description: 'Assorted meat kebab platter',
     category: 'Platters',
+    rating: 4.9,
+    reviews: 156,
   },
   {
     id: '5',
@@ -46,6 +56,8 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 16.5,
     description: 'Fresh grilled fish with lemon',
     category: 'Seafood',
+    rating: 4.8,
+    reviews: 112,
   },
   {
     id: '6',
@@ -53,8 +65,23 @@ const SAMPLE_PRODUCTS: Product[] = [
     price: 11.0,
     description: 'Traditional couscous with vegetables',
     category: 'Platters',
+    rating: 4.7,
+    reviews: 103,
   },
 ];
+
+// Modern gradient placeholder images
+const getImageGradient = (id: string) => {
+  const gradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+  ];
+  return gradients[parseInt(id) % gradients.length];
+};
 
 function App() {
   const { items, itemCount, totalPrice, addItem, removeItem, clearCart, getItem } =
@@ -79,28 +106,28 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0f0f] to-[#1a1a1a]">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#0a0a0a] border-b border-[#d4af37] border-opacity-20">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-[#d4af37] rounded-lg p-2">
-                <ShoppingBag className="w-6 h-6 text-[#0a0a0a]" />
+              <div className="bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl p-2">
+                <ShoppingBag className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-white">
-                  Eagle.TN
+                <h1 className="text-2xl md:text-3xl font-bold text-black" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                  The Eagle TN
                 </h1>
-                <p className="text-xs md:text-sm text-[#9ca3af]">
+                <p className="text-xs md:text-sm text-gray-500">
                   Premium Food Delivery
                 </p>
               </div>
             </div>
             {itemCount > 0 && (
               <div className="text-right">
-                <p className="text-sm text-[#9ca3af]">Cart Items</p>
-                <p className="text-2xl font-bold text-[#d4af37]">{itemCount}</p>
+                <p className="text-sm text-gray-600">Cart Items</p>
+                <p className="text-2xl font-bold text-amber-600">{itemCount}</p>
               </div>
             )}
           </div>
@@ -109,17 +136,20 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+        <div className="mb-10">
+          <h2 
+            className="text-4xl md:text-5xl font-bold text-black mb-3" 
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
             Our Menu
           </h2>
-          <p className="text-[#9ca3af]">
-            Explore our delicious selection of authentic dishes
+          <p className="text-gray-600 max-w-2xl">
+            Discover our curated selection of authentic Tunisian dishes, expertly prepared and delivered with elegance to your door.
           </p>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32 md:pb-24">
+        {/* Products Grid - Modern Card Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32 md:pb-24">
           {SAMPLE_PRODUCTS.map((product) => {
             const cartItem = getItem(product.id);
             const quantity = cartItem?.quantity || 0;
@@ -127,48 +157,91 @@ function App() {
             return (
               <div
                 key={product.id}
-                className="group bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-[#d4af37] border-opacity-30 rounded-xl overflow-hidden hover:border-opacity-60 transition-all duration-300"
+                className="group bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-50"
               >
-                {/* Product Image Placeholder */}
-                <div className="h-40 bg-gradient-to-br from-[#d4af37] via-[#9d7d28] to-[#5a5a5a] opacity-30 group-hover:opacity-40 transition-opacity" />
+                {/* Product Image Placeholder - High Quality Gradient */}
+                <div 
+                  className="h-56 w-full relative overflow-hidden bg-gradient-to-br"
+                  style={{ 
+                    background: getImageGradient(product.id),
+                  }}
+                >
+                  {/* Overlay pattern for visual interest */}
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300" />
+                  
+                  {/* Category badge */}
+                  <div className="absolute top-4 right-4">
+                    <span className="bg-white bg-opacity-95 text-gray-800 text-xs font-semibold px-4 py-2 rounded-full backdrop-blur-sm">
+                      {product.category}
+                    </span>
+                  </div>
+                </div>
 
                 {/* Product Info */}
-                <div className="p-4 md:p-6">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <h3 className="text-lg md:text-xl font-bold text-white mb-1">
-                        {product.name}
-                      </h3>
-                      <p className="text-xs md:text-sm text-[#9ca3af] mb-3">
-                        {product.description}
-                      </p>
+                <div className="p-6 md:p-7">
+                  {/* Name - Serif Font */}
+                  <h3 
+                    className="text-2xl font-bold text-black mb-2 group-hover:text-amber-600 transition-colors"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
+                    {product.name}
+                  </h3>
+
+                  {/* Description - Serif Font for Elegance */}
+                  <p 
+                    className="text-gray-600 text-base mb-4 leading-relaxed"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
+                    {product.description}
+                  </p>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(product.rating || 0)
+                              ? 'fill-amber-400 text-amber-400'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
                     </div>
+                    <span className="text-sm font-semibold text-gray-800">
+                      {product.rating}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      ({product.reviews} reviews)
+                    </span>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <p className="text-xl md:text-2xl font-bold text-[#d4af37]">
+                  {/* Footer - Price and Controls */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <p className="text-2xl md:text-3xl font-bold text-amber-600" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
                       {product.price.toLocaleString('en-US', {
                         minimumFractionDigits: 1,
                         maximumFractionDigits: 1,
                       })}{' '}
-                      <span className="text-sm text-[#9ca3af]">DT</span>
+                      <span className="text-sm text-gray-500">DT</span>
                     </p>
 
                     {/* Quantity Controls */}
                     {quantity > 0 ? (
-                      <div className="flex items-center gap-2 bg-[#d4af37] bg-opacity-20 border border-[#d4af37] rounded-lg px-3 py-2">
+                      <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
                         <button
                           onClick={() => removeItem(product.id)}
-                          className="text-[#d4af37] hover:text-[#e5c158] transition-colors"
+                          className="text-amber-600 hover:text-amber-700 transition-colors p-1"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
-                        <span className="text-white font-bold w-6 text-center">
+                        <span className="text-gray-800 font-bold w-6 text-center">
                           {quantity}
                         </span>
                         <button
                           onClick={() => handleAddItem(product)}
-                          className="text-[#d4af37] hover:text-[#e5c158] transition-colors"
+                          className="text-amber-600 hover:text-amber-700 transition-colors p-1"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -176,7 +249,7 @@ function App() {
                     ) : (
                       <button
                         onClick={() => handleAddItem(product)}
-                        className="px-4 py-2 bg-[#d4af37] text-[#0a0a0a] font-bold rounded-lg hover:bg-[#e5c158] transition-colors transform hover:scale-105 active:scale-95"
+                        className="px-6 py-2 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
                       >
                         Add
                       </button>
