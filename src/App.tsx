@@ -6,7 +6,6 @@ import { useAuthStore } from './store/authStore'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import SplashScreen from './components/SplashScreen'
-import HomePage from './pages/HomePage'
 import RestaurantsPage from './pages/RestaurantsPage'
 import RestaurantPage from './pages/RestaurantPage'
 import AuthPage from './pages/AuthPage'
@@ -50,7 +49,6 @@ export default function App() {
 
   return (
     <>
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <Toaster
         position="top-right"
         toastOptions={{
@@ -62,23 +60,30 @@ export default function App() {
           },
         }}
       />
-      <Navbar />
-      <main style={{ flex: 1 }}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/restaurants" element={<RestaurantsPage />} />
-          <Route path="/restaurants/:id" element={<RestaurantPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/legal/mentions-legales" element={<MentionsLegales />} />
-          <Route path="/legal/cgu" element={<CGU />} />
-          <Route path="/legal/confidentialite" element={<Confidentialite />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
-      <Footer />
+      
+      {showSplash ? (
+        <SplashScreen onComplete={() => setShowSplash(false)} />
+      ) : (
+        <>
+          <Navbar />
+          <main style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/restaurants" element={<RestaurantsPage />} />
+              <Route path="/restaurants/:id" element={<RestaurantPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/orders" element={<OrdersPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/legal/mentions-legales" element={<MentionsLegales />} />
+              <Route path="/legal/cgu" element={<CGU />} />
+              <Route path="/legal/confidentialite" element={<Confidentialite />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+          <Footer />
+        </>
+      )}
     </>
   )
 }
