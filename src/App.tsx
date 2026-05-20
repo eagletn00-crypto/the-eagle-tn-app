@@ -1,17 +1,45 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { supabase } from './lib/supabase';
+import { useAuthStore } from './store/authStore';
+import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+import SplashScreen from './components/SplashScreen';
+import RestaurantsPage from './pages/RestaurantsPage';
+import RestaurantPage from './pages/RestaurantPage';
+import AuthPage from './pages/AuthPage';
+import CartPage from './pages/CartPage';
+import OrdersPage from './pages/OrdersPage';
+import DashboardPage from './pages/DashboardPage';
+import MentionsLegales from './pages/legal/MentionsLegales';
+import CGU from './pages/legal/CGU';
+import Confidentialite from './pages/legal/Confidentialite';
 
 export default function App() {
+  const { setUser, setProfile, setLoading } = useAuthStore();
+  const [showSplash, setShowSplash] = useState(false); // تم تغييرها لـ false مؤقتاً لتجنب تعليق الصفحة
+
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh', 
-      backgroundColor: '#1a1a1a', 
-      color: 'white',
-      fontFamily: 'sans-serif' 
-    }}>
-      <h1>تم النشر بنجاح! الموقع يعمل الآن.</h1>
-    </div>
+    <>
+      <Toaster position="top-right" />
+      <Navbar />
+      <main style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/restaurants" element={<RestaurantsPage />} />
+          <Route path="/restaurants/:id" element={<RestaurantPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/legal/mentions-legales" element={<MentionsLegales />} />
+          <Route path="/legal/cgu" element={<CGU />} />
+          <Route path="/legal/confidentialite" element={<Confidentialite />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
   );
 }
