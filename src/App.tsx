@@ -396,7 +396,8 @@ function App() {
       <FloatingCartBar
         itemCount={itemCount}
         totalPrice={totalPrice}
-        cartItems={items}
+        items={items}
+        
         onCheckout={handleCheckout}
         isLoading={isCheckingOut}
         currencySymbol="DT"
