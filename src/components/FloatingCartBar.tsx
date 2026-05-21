@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingCart, ArrowRight } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Check } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { sendOrderToTelegram } from '../services/telegramService';
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 interface FloatingCartBarProps {
   itemCount: number;
@@ -7,6 +16,7 @@ interface FloatingCartBarProps {
   onCheckout: () => void;
   isLoading?: boolean;
   currencySymbol?: string;
+  items?: CartItem[];
 }
 
 export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
@@ -15,15 +25,87 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
   onCheckout,
   isLoading = false,
   currencySymbol = 'DT',
+  items = [],
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isSendingToTelegram, setIsSendingToTelegram] = useState(false);
+  const [orderSent, setOrderSent] = useState(false);
 
   // Show/hide animation trigger based on cart items
   useEffect(() => {
     setIsVisible(itemCount > 0);
   }, [itemCount]);
 
+  // Reset success state after 3 seconds
+  useEffect(() => {
+    if (orderSent) {
+      const timer = setTimeout(() => {
+        setOrderSent(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [orderSent]);
+
+  const handleCheckoutClick = async () => {
+    try {
+      setIsSendingToTelegram(true);
+
+      // Send order to Telegram
+      const telegramSuccess = await sendOrderToTelegram({
+        items,
+        totalPrice,
+        currencySymbol,
+      });
+
+      if (telegramSuccess) {
+        setOrderSent(true);
+        toast.success('✅ Order sent to restaurant!', {
+          duration: 3,
+          position: 'top-center',
+          style: {
+            background: '#10b981',
+            color: '#fff',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          },
+        });
+
+        // Call original onCheckout after a brief delay
+        setTimeout(() => {
+          onCheckout();
+        }, 500);
+      } else {
+        toast.error('❌ Failed to send order. Please try again.', {
+          duration: 3,
+          position: 'top-center',
+          style: {
+            background: '#ef4444',
+            color: '#fff',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('❌ An error occurred. Please try again.', {
+        duration: 3,
+        position: 'top-center',
+        style: {
+          background: '#ef4444',
+          color: '#fff',
+          fontSize: '14px',
+          fontWeight: 'bold',
+        },
+      });
+    } finally {
+      setIsSendingToTelegram(false);
+    }
+  };
+
   if (!isVisible) return null;
+
+  const isProcessing = isLoading || isSendingToTelegram;
 
   return (
     <>
@@ -64,10 +146,12 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
                     {itemCount === 1 ? 'Item' : 'Items'} in cart
                   </p>
                   <p className="text-lg md:text-2xl font-bold text-white mt-1">
-                    <span className="text-[#d4af37]">{totalPrice.toLocaleString('en-US', {
-                      minimumFractionDigits: 3,
-                      maximumFractionDigits: 3,
-                    })}</span>
+                    <span className="text-[#d4af37]">
+                      {totalPrice.toLocaleString('en-US', {
+                        minimumFractionDigits: 3,
+                        maximumFractionDigits: 3,
+                      })}
+                    </span>
                     {' '}
                     <span className="text-sm md:text-lg text-[#9ca3af]">
                       {currencySymbol}
@@ -80,10 +164,12 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
               <div className="sm:hidden text-right">
                 <p className="text-sm text-[#9ca3af] font-medium">Total</p>
                 <p className="text-xl font-bold text-white">
-                  <span className="text-[#d4af37]">{totalPrice.toLocaleString('en-US', {
-                    minimumFractionDigits: 3,
-                    maximumFractionDigits: 3,
-                  })}</span>
+                  <span className="text-[#d4af37]">
+                    {totalPrice.toLocaleString('en-US', {
+                      minimumFractionDigits: 3,
+                      maximumFractionDigits: 3,
+                    })}
+                  </span>
                   {' '}
                   <span className="text-xs text-[#9ca3af]">{currencySymbol}</span>
                 </p>
@@ -91,24 +177,33 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
 
               {/* Right: Checkout Button */}
               <button
-                onClick={onCheckout}
-                disabled={isLoading || itemCount === 0}
+                onClick={handleCheckoutClick}
+                disabled={isProcessing || itemCount === 0 || orderSent}
                 className={`
                   flex items-center gap-2 md:gap-3 px-4 md:px-8 py-3 md:py-4
                   font-bold text-sm md:text-base rounded-lg md:rounded-xl
                   transition-all duration-300 transform
                   focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]
                   ${
-                    isLoading || itemCount === 0
+                    isProcessing || itemCount === 0 || orderSent
                       ? 'bg-[#d4af37] bg-opacity-50 text-[#0a0a0a] cursor-not-allowed'
                       : 'bg-[#d4af37] text-[#0a0a0a] hover:bg-[#e5c158] shadow-lg shadow-[#d4af37]/20 hover:shadow-[#d4af37]/40 hover:scale-105 active:scale-95'
                   }
                 `}
               >
-                <span>
-                  {isLoading ? 'Processing...' : 'Order Now'}
-                </span>
-                {!isLoading && <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />}
+                {orderSent ? (
+                  <>
+                    <Check className="w-5 h-5 md:w-6 md:h-6" />
+                    <span>Order Sent!</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      {isProcessing ? 'Sending...' : 'Order Now'}
+                    </span>
+                    {!isProcessing && <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />}
+                  </>
+                )}
               </button>
             </div>
           </div>
