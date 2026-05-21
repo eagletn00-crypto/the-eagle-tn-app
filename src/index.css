@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ================================================================
    THE EAGLE TN — Light Design System
    Clean White · Professional Black · Accent Blue
