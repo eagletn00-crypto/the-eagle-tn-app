@@ -6,7 +6,7 @@ export default defineConfig({
     global: 'globalThis',
   },
   plugins: [react()],
-  base: '/',
+  base: ',/',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
