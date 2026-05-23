@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShoppingCart, ArrowRight, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { sendOrderToTelegram } from '../services/telegramService';
+import { sendOrderToTelegram, OrderData } from '../services/telegramService';
 
 interface CartItem {
   id: string;
@@ -31,17 +31,13 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
   const [isSendingToTelegram, setIsSendingToTelegram] = useState(false);
   const [orderSent, setOrderSent] = useState(false);
 
-  // Show/hide animation trigger based on cart items
   useEffect(() => {
     setIsVisible(itemCount > 0);
   }, [itemCount]);
 
-  // Reset success state after 3 seconds
   useEffect(() => {
     if (orderSent) {
-      const timer = setTimeout(() => {
-        setOrderSent(false);
-      }, 3000);
+      const timer = setTimeout(() => { setOrderSent(false); }, 3000);
       return () => clearTimeout(timer);
     }
   }, [orderSent]);
@@ -50,181 +46,65 @@ export const FloatingCartBar: React.FC<FloatingCartBarProps> = ({
     try {
       setIsSendingToTelegram(true);
 
-      // Send order to Telegram
-      const telegramSuccess = await sendOrderToTelegram({
-        items,
-        totalPrice,
-        currencySymbol,
-      });
+      const orderData: OrderData = {
+        items: items,
+        totalPrice: totalPrice,
+        currencySymbol: currencySymbol || 'DT',
+      };
+
+      const telegramSuccess = await sendOrderToTelegram(orderData);
 
       if (telegramSuccess) {
         setOrderSent(true);
-        toast.success('✅ Order sent to restaurant!', {
-          duration: 3,
-          position: 'top-center',
-          style: {
-            background: '#10b981',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: 'bold',
-          },
-        });
-
-        // Call original onCheckout after a brief delay
-        setTimeout(() => {
-          onCheckout();
-        }, 500);
+        toast.success('✅ Order sent to restaurant!', { duration: 3000 });
+        setTimeout(() => { onCheckout(); }, 500);
       } else {
-        toast.error('❌ Failed to send order. Please try again.', {
-          duration: 3,
-          position: 'top-center',
-          style: {
-            background: '#ef4444',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: 'bold',
-          },
-        });
+        toast.error('❌ Failed to send order.');
       }
     } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error('❌ An error occurred. Please try again.', {
-        duration: 3,
-        position: 'top-center',
-        style: {
-          background: '#ef4444',
-          color: '#fff',
-          fontSize: '14px',
-          fontWeight: 'bold',
-        },
-      });
+      toast.error('❌ An error occurred.');
     } finally {
       setIsSendingToTelegram(false);
     }
   };
 
   if (!isVisible) return null;
-
   const isProcessing = isLoading || isSendingToTelegram;
 
   return (
     <>
-      {/* Spacer for fixed bottom bar */}
       <div className="h-24 md:h-20" />
-
-      {/* Floating Cart Bar */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-50 animate-slide-up"
-        style={{
-          animation: 'slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-        }}
-      >
-        {/* Background with gradient */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 animate-slide-up">
         <div className="bg-gradient-to-r from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] border-t-2 border-[#d4af37] backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-24 md:h-20">
-              {/* Left: Cart Icon & Item Count */}
               <div className="flex items-center gap-4 md:gap-6">
-                {/* Cart Icon Container */}
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute inset-0 bg-[#d4af37] rounded-full opacity-10 blur-lg" />
-                  <div className="relative bg-[#d4af37] bg-opacity-10 border border-[#d4af37] rounded-full p-3 md:p-4 transition-all duration-300 hover:bg-opacity-20">
-                    <ShoppingCart className="w-6 h-6 md:w-7 md:h-7 text-[#d4af37]" />
-                  </div>
-
-                  {/* Item Count Badge */}
+                <div className="relative">
+                  <ShoppingCart className="w-7 h-7 text-[#d4af37]" />
                   {itemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-[#d4af37] text-[#0a0a0a] text-xs md:text-sm font-bold rounded-full w-6 h-6 md:w-7 md:h-7 flex items-center justify-center animate-pulse">
-                      {itemCount > 99 ? '99+' : itemCount}
+                    <span className="absolute -top-2 -right-2 bg-[#d4af37] text-black text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                      {itemCount}
                     </span>
                   )}
                 </div>
-
-                {/* Cart Info */}
-                <div className="hidden sm:block">
-                  <p className="text-xs md:text-sm text-[#9ca3af] font-medium">
-                    {itemCount === 1 ? 'Item' : 'Items'} in cart
-                  </p>
-                  <p className="text-lg md:text-2xl font-bold text-white mt-1">
-                    <span className="text-[#d4af37]">
-                      {totalPrice.toLocaleString('en-US', {
-                        minimumFractionDigits: 3,
-                        maximumFractionDigits: 3,
-                      })}
-                    </span>
-                    {' '}
-                    <span className="text-sm md:text-lg text-[#9ca3af]">
-                      {currencySymbol}
-                    </span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Mobile: Compact Price Display */}
-              <div className="sm:hidden text-right">
-                <p className="text-sm text-[#9ca3af] font-medium">Total</p>
                 <p className="text-xl font-bold text-white">
-                  <span className="text-[#d4af37]">
-                    {totalPrice.toLocaleString('en-US', {
-                      minimumFractionDigits: 3,
-                      maximumFractionDigits: 3,
-                    })}
-                  </span>
-                  {' '}
-                  <span className="text-xs text-[#9ca3af]">{currencySymbol}</span>
+                  {totalPrice.toFixed(3)} <span className="text-[#d4af37]">{currencySymbol}</span>
                 </p>
               </div>
-
-              {/* Right: Checkout Button */}
               <button
                 onClick={handleCheckoutClick}
-                disabled={isProcessing || itemCount === 0 || orderSent}
-                className={`
-                  flex items-center gap-2 md:gap-3 px-4 md:px-8 py-3 md:py-4
-                  font-bold text-sm md:text-base rounded-lg md:rounded-xl
-                  transition-all duration-300 transform
-                  focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#0a0a0a]
-                  ${
-                    isProcessing || itemCount === 0 || orderSent
-                      ? 'bg-[#d4af37] bg-opacity-50 text-[#0a0a0a] cursor-not-allowed'
-                      : 'bg-[#d4af37] text-[#0a0a0a] hover:bg-[#e5c158] shadow-lg shadow-[#d4af37]/20 hover:shadow-[#d4af37]/40 hover:scale-105 active:scale-95'
-                  }
-                `}
+                disabled={isProcessing || orderSent}
+                className="bg-[#d4af37] text-black px-6 py-3 rounded-lg font-bold hover:bg-[#e5c158]"
               >
-                {orderSent ? (
-                  <>
-                    <Check className="w-5 h-5 md:w-6 md:h-6" />
-                    <span>Order Sent!</span>
-                  </>
-                ) : (
-                  <>
-                    <span>
-                      {isProcessing ? 'Sending...' : 'Order Now'}
-                    </span>
-                    {!isProcessing && <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />}
-                  </>
-                )}
+                {orderSent ? 'Sent!' : isProcessing ? 'Sending...' : 'Order Now'}
               </button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Keyframe Animation */}
-      <style>{`
-        @keyframes slideUp {
-          from {
-            transform: translateY(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </>
   );
 };
 
 export default FloatingCartBar;
+
