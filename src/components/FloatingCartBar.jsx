@@ -1,45 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { ShoppingCart, ArrowRight, Check } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { sendOrderToTelegram } from '../services/telegramService';
+import React from 'react';
+import { ShoppingCart } from 'lucide-react';
+import { useCartStore } from './cartStore'; // تأكد من المسار الصحيح للملف
 
-// تم حذف تعريفات الواجهات (Interfaces) التي كانت تسبب خطأ TS2345
+export const FloatingCartBar = () => {
+  // جلب البيانات مباشرة من المخزن
+  const items = useCartStore((state) => state.items);
+  
+  // افترضنا هنا وجود دوال لحساب الإجمالي والعدد في cartStore.ts
+  // إذا لم تكن موجودة، يمكنك حسابها هنا مباشرة:
+  const itemCount = items.length;
+  const totalPrice = items.reduce((sum, item) => sum + item.price, 0);
 
-export const FloatingCartBar = ({
-  itemCount,
-  totalPrice,
-  onCheckout,
-  isLoading = false,
-  currencySymbol = 'DT',
-  items = [],
-}) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [isSendingToTelegram, setIsSendingToTelegram] = useState(false);
-  const [orderSent, setOrderSent] = useState(false);
+  if (itemCount === 0) return null;
 
-  // ... (باقي كود الـ useEffect كما هو)
-
-  const handleCheckoutClick = async () => {
-    try {
-      setIsSendingToTelegram(true);
-
-      // تمرير البيانات مباشرة دون فرض واجهة OrderData الصارمة
-      const telegramSuccess = await sendOrderToTelegram({
-        items: items,
-        totalPrice: totalPrice,
-        currencySymbol: currencySymbol || 'DT',
-      });
-
-      if (telegramSuccess) {
-        setOrderSent(true);
-        // ... (باقي كود النجاح)
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsSendingToTelegram(false);
-    }
-  };
-
-  // ... (باقي كود الـ return كما هو)
+  return (
+    <div className="fixed bottom-0 left-0 right-0 p-4 bg-black text-white border-t border-[#d4af37]">
+      <div className="flex justify-between items-center max-w-7xl mx-auto">
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="text-[#d4af37]" />
+          <span>{itemCount} items</span>
+        </div>
+        <div className="font-bold">
+          Total: {totalPrice.toFixed(3)} DT
+        </div>
+        <button className="bg-[#d4af37] text-black px-4 py-2 rounded">
+          Order Now
+        </button>
+      </div>
+    </div>
+  );
 };
