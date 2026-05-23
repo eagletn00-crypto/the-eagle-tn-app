@@ -1,3 +1,5 @@
+import MenuTab from '../components/MenuTab';
+import SettingsTab from '../components/SettingsTab';
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { LayoutDashboard, ClipboardList, UtensilsCrossed, Settings, TrendingUp, Clock, CheckCircle2, AlertCircle, ToggleLeft, ToggleRight, RefreshCw } from 'lucide-react'
