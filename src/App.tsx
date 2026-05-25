@@ -1,38 +1,23 @@
-import { Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { cardVariants } from './animations'; // استيراد الحركات التي نقلناها
 
-/**
- * AppAnimations
- * مركز تحكم الحركات في تطبيق Eagle TN
- */
+export default function App() {
+  return (
+    <div className="app-container">
+      <header>
+        <h1>The Eagle TN</h1>
+      </header>
 
-export const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      duration: 0.5, 
-      ease: "easeInOut" 
-    } 
-  }
-};
-
-export const headerVariants: Variants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: { 
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" } 
-  }
-};
-
-// إضافة حزمة للحركات المتتالية (مفيدة لقوائم المطاعم)
-export const listContainerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
+      <main>
+        <motion.div 
+          variants={cardVariants} 
+          initial="hidden" 
+          animate="visible"
+        >
+          <h2>مرحباً بك في Eagle TN</h2>
+          <p>توصيل أشهى المأكولات في تونس بكل أناقة.</p>
+        </motion.div>
+      </main>
+    </div>
+  );
+}
