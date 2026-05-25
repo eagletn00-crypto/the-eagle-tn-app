@@ -7,6 +7,10 @@ export default defineConfig({
   },
   plugins: [react()],
   base: '/',
+  // أضفنا هذا الجزء لحل مشكلة الـ Host
+  preview: {
+    allowedHosts: ['the-eagle-tn-app.onrender.com'],
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
