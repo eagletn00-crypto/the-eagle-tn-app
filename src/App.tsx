@@ -1,23 +1,38 @@
 import { Variants } from 'framer-motion';
 
-// تعريف متوافق 100% مع TypeScript
-const cardVariants: Variants = {
+/**
+ * AppAnimations
+ * مركز تحكم الحركات في تطبيق Eagle TN
+ */
+
+export const cardVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
     transition: { 
       duration: 0.5, 
-      ease: "easeInOut" // استخدم سلسلة نصية قياسية تقبلها المكتبة
+      ease: "easeInOut" 
     } 
   }
 };
 
-// افعل نفس الشيء مع headerVariants أو أي variants أخرى
-const headerVariants: Variants = {
-  hidden: { opacity: 0 },
+export const headerVariants: Variants = {
+  hidden: { opacity: 0, y: -10 },
   visible: { 
     opacity: 1,
-    transition: { duration: 0.5, ease: "linear" } 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" } 
+  }
+};
+
+// إضافة حزمة للحركات المتتالية (مفيدة لقوائم المطاعم)
+export const listContainerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
   }
 };
