@@ -1,30 +1,23 @@
-// قم باستيراد الـ store الخاص بالسلة
-import { useCartStore } from './store/cartStore'; 
+import { Variants } from 'framer-motion';
 
-function App() {
-  // استخرج الحالة من الـ store مباشرة
-  const { items, getTotalPrice } = useCartStore();
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-  const totalPrice = getTotalPrice();
+// تعريف متوافق 100% مع TypeScript
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      duration: 0.5, 
+      ease: "easeInOut" // استخدم سلسلة نصية قياسية تقبلها المكتبة
+    } 
+  }
+};
 
-  return (
-    <Router>
-      <Toaster position="top-right" />
-      
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-
-      {/* الآن يعمل الشريط ديناميكياً مع بيانات السلة الحقيقية */}
-      {itemCount > 0 && (
-        <FloatingCartBar 
-          itemCount={itemCount} 
-          totalPrice={totalPrice} 
-          onCheckout={() => console.log('Proceeding to checkout...')} 
-        />
-      )}
-    </Router>
-  );
-}
+// افعل نفس الشيء مع headerVariants أو أي variants أخرى
+const headerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { duration: 0.5, ease: "linear" } 
+  }
+};
