@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
-// 1. فصل البيانات الثابتة (Constants) لتقليل حجم الـ Re-renders
 const STARS = Array.from({ length: 80 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
@@ -18,7 +17,6 @@ interface Props {
 export default function SplashScreen({ onComplete }: Props) {
   const [phase, setPhase] = useState<'flying' | 'landing' | 'settled' | 'exit'>('flying');
 
-  // 2. معالجة الحركة بذكاء
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 80, damping: 20 });
@@ -26,7 +24,6 @@ export default function SplashScreen({ onComplete }: Props) {
   const rotateX = useTransform(springY, [-200, 200], [8, -8]);
   const rotateY = useTransform(springX, [-200, 200], [-8, 8]);
 
-  // 3. دورة حياة المكون (Lifecycle)
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('landing'), 1800);
     const t2 = setTimeout(() => setPhase('settled'), 3200);
@@ -48,7 +45,7 @@ export default function SplashScreen({ onComplete }: Props) {
           key="splash"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
           onMouseMove={handleMouseMove}
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
@@ -58,7 +55,6 @@ export default function SplashScreen({ onComplete }: Props) {
             overflow: 'hidden', perspective: 1200,
           }}
         >
-          {/* نجوم الخلفية - مستقرة ومحسنة */}
           {STARS.map(s => (
             <motion.div
               key={s.id}
@@ -68,11 +64,10 @@ export default function SplashScreen({ onComplete }: Props) {
                 background: 'rgba(232,185,35,0.7)', pointerEvents: 'none',
               }}
               animate={{ opacity: [s.opacity, s.opacity * 0.2, s.opacity] }}
-              transition={{ duration: s.duration, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: s.duration, repeat: Infinity, ease: 'linear' }}
             />
           ))}
 
-          {/* الحاجب العلوي - مُنظم ومغلق */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: phase !== 'flying' ? 1 : 0, y: phase !== 'flying' ? 0 : -20 }}
@@ -84,7 +79,6 @@ export default function SplashScreen({ onComplete }: Props) {
             <div style={{ width: 40, height: 1, background: 'linear-gradient(90deg, rgba(212,160,23,0.6), transparent)' }} />
           </motion.div>
 
-          {/* العنوان الرئيسي */}
           <motion.h1
             onClick={handleSkip}
             style={{ 
